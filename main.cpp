@@ -1,5 +1,12 @@
 #include <SFML/Graphics.hpp>
-#include "Classes/Tile/Tile.hpp"
+#include "Classes/Board/Board.hpp"
+#include <time.h>
+
+/* Declarations */
+
+void drawGrid(sf::RenderWindow &window, float windowSize, int size, float tileSize, sf::Color color);
+
+/*--------------*/
 
 /* Window configuration */
 struct WindowConfig {
@@ -9,14 +16,20 @@ struct WindowConfig {
 
 /* Main program */
 int main() {
+    srand(time(NULL));
+
     /* Window setup */
     WindowConfig config;
     sf::RenderWindow window(sf::VideoMode(config.width, config.height), "Memory Game", sf::Style::Close);
     window.setFramerateLimit(60);  // 60 FPS
 
-    /* Example shapes */
-    Tile *tile1 = new Tile(sf::Vector2f(0, 0), 120, sf::Color::Magenta);
-    Tile *tile2 = new Tile(sf::Vector2f(120, 0), 120, sf::Color::Green);
+    /* Create game board */
+    sf::Color colorsPalette[2] = {  // Colors palette
+        sf::Color(5, 120, 10),
+        sf::Color(85, 45, 232)
+    };
+
+    Board *gameBoard = new Board(6, 100, colorsPalette, 2);
 
     /* Window loop */
     while (window.isOpen()) {
@@ -31,27 +44,12 @@ int main() {
         window.clear(sf::Color::White);
 
         /* -------------------------------------------------- */
-        tile1->drawSprite(window);
-        tile2->drawSprite(window);
+
+        // Render all tiles on screen
+        gameBoard->drawTiles(window);
 
         // Draw decoration grid
-        for (int i = 0; i < 5; i++) {
-            sf::Vertex line[] = {
-                sf::Vertex(sf::Vector2f(0.f, i * 120.f), sf::Color::Black),
-                sf::Vertex(sf::Vector2f(600.f, i * 120.f), sf::Color::Black)
-            };
-
-            window.draw(line, 2, sf::Lines);
-        }
-
-        for (int i = 0; i < 5; i++) {
-            sf::Vertex line[] = {
-                sf::Vertex(sf::Vector2f(i * 120.f, 0.f), sf::Color::Black),
-                sf::Vertex(sf::Vector2f(i * 120.f, 600.f), sf::Color::Black)
-            };
-
-            window.draw(line, 2, sf::Lines);
-        }
+        drawGrid(window, config.width, 6, 100, sf::Color::Black);
 
         /* -------------------------------------------------- */
 
@@ -61,3 +59,28 @@ int main() {
 
     return 0;
 }
+
+/* Helper Functions */
+
+/* Draw grid (n x n) with specific tile size */
+void drawGrid(sf::RenderWindow &window, float windowSize, int size, float tileSize, sf::Color color) {
+    for (int i = 0; i < size; i++) {
+        sf::Vertex line[] = {
+            sf::Vertex(sf::Vector2f(0.f, i * tileSize), color),
+            sf::Vertex(sf::Vector2f(windowSize, i * tileSize), color)
+        };
+
+        window.draw(line, 2, sf::Lines);
+    }
+
+    for (int i = 0; i < size; i++) {
+        sf::Vertex line[] = {
+            sf::Vertex(sf::Vector2f(i * tileSize, 0.f), color),
+            sf::Vertex(sf::Vector2f(i * tileSize, windowSize), color)
+        };
+
+        window.draw(line, 2, sf::Lines);
+    }
+}
+
+/* ---------------- */
