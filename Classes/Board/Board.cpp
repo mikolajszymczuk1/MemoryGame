@@ -96,3 +96,14 @@ void Board::compareTwoTiles(TileCords tileACords, TileCords tileBCords) {
         boardArr[tileBCords.y][tileBCords.x].setTileStatus(false);
     }
 }
+
+/* Return true if all tiles are discovered */
+bool Board::checkIfUserWon() {
+    for (int i = 0; i < boardSize; i++) {
+        for (int j = 0; j < boardSize; j++) {
+            if (!boardArr[i][j].getTileStatus()) return false;
+        }
+    }
+
+    return true;
+}
