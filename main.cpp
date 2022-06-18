@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "Classes/Board/Board.hpp"
+#include "Structures/WindowConfig/WindowConfig.hpp"
 #include <time.h>
 
 /* Declarations */
@@ -9,18 +10,18 @@ void gameUpdate();
 
 /* ------------ */
 
-/* Window configuration */
-struct WindowConfig {
-    int width = 600;
-    int height = 600;
-};
-
 /* Main program */
 int main() {
     srand(time(NULL));  // Seed for random functions
 
     /* Variables */
+    const int MAX_DISCOVERED_TILES = 2;
+    const int DELAY_BETWEEN_EACH_GUESS = 1;  // In seconds
     bool isMouseButtonClicked = false;
+    int discoveredTiles = 0;
+    TileCords tileA;
+    TileCords tileB;
+    sf::Clock clock;
 
     /* Window setup */
     WindowConfig config;
@@ -64,14 +65,32 @@ int main() {
 
         /* -------------------------------------------------- */
 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            if (!isMouseButtonClicked) {
+        if (discoveredTiles < MAX_DISCOVERED_TILES) {
+            clock.restart();  // Restart clock
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isMouseButtonClicked) {
                 isMouseButtonClicked = true;
                 sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-                gameBoard->discoverTile(mousePosition);
+                    
+                if (gameBoard->discoverTile(mousePosition)) {
+                    if (discoveredTiles == 0) {
+                        gameBoard->getTileCords(mousePosition, tileA);     
+                    } else {
+                        gameBoard->getTileCords(mousePosition, tileB);
+                    }
+
+                    discoveredTiles++;
+                }
+            } else {
+                isMouseButtonClicked = false;
             }
         } else {
-            isMouseButtonClicked = false;
+            // Create small delay between each guess
+            sf::Time delay = clock.getElapsedTime();
+            if (delay.asSeconds() > DELAY_BETWEEN_EACH_GUESS) {
+                gameBoard->compareTwoTiles(tileA, tileB);
+                discoveredTiles = 0;
+            }
         }
 
         /* -------------------------------------------------- */
