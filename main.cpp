@@ -18,6 +18,7 @@ int main() {
     const int MAX_DISCOVERED_TILES = 2;
     const int DELAY_BETWEEN_EACH_GUESS = 1;  // In seconds
     bool isMouseButtonClicked = false;
+    bool isWon = false;
     int discoveredTiles = 0;
     TileCords tileA;
     TileCords tileB;
@@ -27,6 +28,22 @@ int main() {
     WindowConfig config;
     sf::RenderWindow window(sf::VideoMode(config.width, config.height), "Memory Game", sf::Style::Close);
     window.setFramerateLimit(60);  // 60 FPS
+
+    /* Font setup */
+    sf::Font font;
+    font.loadFromFile("Fonts/Fascinate-Regular.ttf");
+
+    /* Text setup */
+    sf::Text winText;
+    winText.setFont(font);
+    winText.setString("You won !");
+    winText.setCharacterSize(70);
+    winText.setFillColor(sf::Color::Black);
+    winText.setPosition(
+        sf::Vector2f(
+            (config.width / 2) - (winText.getLocalBounds().width / 2),
+            (config.height / 2) - (winText.getLocalBounds().height))
+    );
 
     /* Create game board */
     sf::Color colorsPalette[18] = {  // Colors palette
@@ -89,6 +106,7 @@ int main() {
             sf::Time delay = clock.getElapsedTime();
             if (delay.asSeconds() > DELAY_BETWEEN_EACH_GUESS) {
                 gameBoard->compareTwoTiles(tileA, tileB);
+                if (gameBoard->checkIfUserWon()) isWon = true;
                 discoveredTiles = 0;
             }
         }
@@ -105,6 +123,9 @@ int main() {
 
         // Draw decoration grid
         drawGrid(window, config.width, 6, 100, sf::Color::Black);
+
+        // If player won, draw a text
+        if (isWon) window.draw(winText);
 
         /* -------------------------------------------------- */
 
