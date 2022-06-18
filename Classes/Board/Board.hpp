@@ -16,4 +16,5 @@ class Board {
         bool isCursorOnTile(sf::Vector2i mousePosition, sf::Vector2i tilePostion, int tileSite);
         void getTileCords(sf::Vector2i position, TileCords &tileCords);
         void compareTwoTiles(TileCords tileACords, TileCords tileBCords);
+        bool checkIfUserWon();
 };
