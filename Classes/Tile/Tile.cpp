@@ -8,9 +8,10 @@ Tile::Tile(sf::Vector2f position, int size, sf::Color color) {
     tileSize = size;
     tilePosition = position;
     tileColor = color;
+    coveringColor = sf::Color::White;
 
     rect = new sf::RectangleShape();
-    rect->setFillColor(tileColor);
+    rect->setFillColor(coveringColor);
     rect->setPosition(tilePosition);
     rect->setSize(sf::Vector2f(tileSize, tileSize));
 }
@@ -36,8 +37,28 @@ sf::Color Tile::getTileColor() {
     return tileColor;
 }
 
+/* Return tile postion */
+sf::Vector2f Tile::getTilePosition() {
+    return tilePosition;
+}
+
+/* Return tile size */
+int Tile::getTileSize() {
+    return tileSize;
+}
+
 /* Set new color value for tile */
 void Tile::setNewColor(sf::Color newColor) {
     tileColor = newColor;
-    rect->setFillColor(newColor);
+}
+
+/* Based on isDiscoverd property set color on tail */
+void Tile::updateColor() {
+    rect->setFillColor(isDiscovered ? tileColor : coveringColor);
+}
+
+/* Show or hide tile on board */
+void Tile::setTileStatus(bool newStatus) {
+    isDiscovered = newStatus;
+    updateColor();
 }

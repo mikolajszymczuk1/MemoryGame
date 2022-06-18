@@ -5,8 +5,9 @@
 /* Declarations */
 
 void drawGrid(sf::RenderWindow &window, float windowSize, int size, float tileSize, sf::Color color);
+void gameUpdate();
 
-/*--------------*/
+/* ------------ */
 
 /* Window configuration */
 struct WindowConfig {
@@ -16,7 +17,10 @@ struct WindowConfig {
 
 /* Main program */
 int main() {
-    srand(time(NULL));
+    srand(time(NULL));  // Seed for random functions
+
+    /* Variables */
+    bool isMouseButtonClicked = false;
 
     /* Window setup */
     WindowConfig config;
@@ -55,6 +59,22 @@ int main() {
                 window.close();
             }
         }
+
+        /* Do all game logic */
+
+        /* -------------------------------------------------- */
+
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (!isMouseButtonClicked) {
+                isMouseButtonClicked = true;
+                sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+                gameBoard->discoverTile(mousePosition);
+            }
+        } else {
+            isMouseButtonClicked = false;
+        }
+
+        /* -------------------------------------------------- */
 
         /* Clear window before drawing */
         window.clear(sf::Color::White);
@@ -98,5 +118,3 @@ void drawGrid(sf::RenderWindow &window, float windowSize, int size, float tileSi
         window.draw(line, 2, sf::Lines);
     }
 }
-
-/* ---------------- */
