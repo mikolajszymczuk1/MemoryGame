@@ -8,17 +8,17 @@ Tile::Tile(sf::Vector2f position, int size, sf::Color color) {
     tileSize = size;
     tilePosition = position;
     tileColor = color;
-    coveringColor = sf::Color::White;
+    isDiscovered = false;
 
     rect = new sf::RectangleShape();
-    rect->setFillColor(coveringColor);
+    rect->setFillColor(tileColor);
     rect->setPosition(tilePosition);
     rect->setSize(sf::Vector2f(tileSize, tileSize));
 }
 
 /* Render sprite on screen */
 void Tile::drawSprite(sf::RenderWindow &window) {
-    window.draw(*rect);
+    if (isDiscovered) window.draw(*rect);
 }
 
 /* Overload '=' operator */
@@ -27,6 +27,7 @@ Tile& Tile::operator=(const Tile *t) {
         tileSize = t->tileSize;
         tilePosition = t->tilePosition;
         rect = t->rect;
+        isDiscovered = t->isDiscovered;
     }
 
     return *this;
@@ -47,18 +48,18 @@ int Tile::getTileSize() {
     return tileSize;
 }
 
+/* Return tile discover status */
+bool Tile::getTileStatus() {
+    return isDiscovered;
+}
+
 /* Set new color value for tile */
 void Tile::setNewColor(sf::Color newColor) {
     tileColor = newColor;
-}
-
-/* Based on isDiscoverd property set color on tail */
-void Tile::updateColor() {
-    rect->setFillColor(isDiscovered ? tileColor : coveringColor);
+    rect->setFillColor(tileColor);
 }
 
 /* Show or hide tile on board */
 void Tile::setTileStatus(bool newStatus) {
     isDiscovered = newStatus;
-    updateColor();
 }
