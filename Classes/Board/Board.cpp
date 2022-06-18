@@ -9,7 +9,7 @@ Board::Board(int size, int tileSize, sf::Color *colorsPalette, int colorsPalette
     for (int i = 0; i < boardSize; i++) {
         boardArr[i] = new Tile[boardSize];
         for (int j = 0; j < boardSize; j++) {
-            boardArr[i][j] = new Tile(sf::Vector2f(i * tileSize, j * tileSize), tileSize, sf::Color::Black);
+            boardArr[i][j] = new Tile(sf::Vector2f(j * tileSize, i * tileSize), tileSize, sf::Color::Black);
         }
     }
 
@@ -47,16 +47,52 @@ int Board::randomNumber(int min, int max) {
 }
 
 /* Show real tile color on tile with postion 'postion' */
-void Board::discoverTile(sf::Vector2i position) {
+bool Board::discoverTile(sf::Vector2i position) {
     for (int i = 0; i < boardSize; i++) {
         for (int j = 0; j < boardSize; j++) {
-            Tile currentTile = boardArr[i][j];
-            sf::Vector2i tilePosition = (sf::Vector2i)currentTile.getTilePosition();
+            sf::Vector2i tilePosition = (sf::Vector2i)boardArr[i][j].getTilePosition();
 
-            if (position.x > tilePosition.x && position.x < (tilePosition.x + currentTile.getTileSize()) &&
-            position.y > tilePosition.y && position.y < (tilePosition.y + currentTile.getTileSize())) {
-                currentTile.setTileStatus(true);
+            if (isCursorOnTile(position, tilePosition, boardArr[i][j].getTileSize()) && !boardArr[i][j].getTileStatus()) {
+                boardArr[i][j].setTileStatus(true);
+                return true;
             }
         }
+    }
+
+    return false;
+}
+
+/* Return true if mouse cursor correctly click the tile */
+bool Board::isCursorOnTile(sf::Vector2i mousePosition, sf::Vector2i tilePosition, int tileSize) {
+    if (mousePosition.x > tilePosition.x && mousePosition.x < (tilePosition.x + tileSize) &&
+    mousePosition.y > tilePosition.y && mousePosition.y < (tilePosition.y + tileSize)) {
+        return true;
+    }
+
+    return false;
+}
+
+/* Get information about tile cords x[j], y[i] */
+void Board::getTileCords(sf::Vector2i position, TileCords &tileCords) {
+    for (int i = 0; i < boardSize; i++) {
+        for (int j = 0; j < boardSize; j++) {
+            sf::Vector2i tilePosition = (sf::Vector2i)boardArr[i][j].getTilePosition();
+
+            if (isCursorOnTile(position, tilePosition, boardArr[i][j].getTileSize())) {
+                tileCords.x = j;
+                tileCords.y = i;
+            }
+        }
+    }
+}
+
+/* Return color from tile that cursor is on it */
+void Board::compareTwoTiles(TileCords tileACords, TileCords tileBCords) {
+    sf::Color tileAColor = boardArr[tileACords.y][tileACords.x].getTileColor();
+    sf::Color tileBColor = boardArr[tileBCords.y][tileBCords.x].getTileColor();
+
+    if (tileAColor != tileBColor) {
+        boardArr[tileACords.y][tileACords.x].setTileStatus(false);
+        boardArr[tileBCords.y][tileBCords.x].setTileStatus(false);
     }
 }
