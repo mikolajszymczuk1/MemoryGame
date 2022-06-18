@@ -4,12 +4,10 @@
 class Tile {
     private:
         int tileSize;
-        bool isDiscovered = false;
+        bool isDiscovered;
         sf::Color tileColor;
-        sf::Color coveringColor;
         sf::Vector2f tilePosition;
         sf::RectangleShape *rect;
-        void updateColor();
     public:
         Tile();
         Tile(sf::Vector2f position, int size, sf::Color color);
@@ -18,6 +16,7 @@ class Tile {
         sf::Color getTileColor();
         sf::Vector2f getTilePosition();
         int getTileSize();
+        bool getTileStatus();
         void setNewColor(sf::Color newColor);
         void setTileStatus(bool newStatus);
 };
