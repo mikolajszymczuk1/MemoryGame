@@ -11,4 +11,5 @@ class Board {
         ~Board();
         void drawTiles(sf::RenderWindow &window);
         static int randomNumber(int min, int max);
+        void discoverTile(sf::Vector2i position);
 };
