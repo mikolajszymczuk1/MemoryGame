@@ -24,12 +24,28 @@ int main() {
     window.setFramerateLimit(60);  // 60 FPS
 
     /* Create game board */
-    sf::Color colorsPalette[2] = {  // Colors palette
-        sf::Color(5, 120, 10),
-        sf::Color(85, 45, 232)
+    sf::Color colorsPalette[18] = {  // Colors palette
+        sf::Color(184, 36,  94),
+        sf::Color(214, 67,  49),
+        sf::Color(255, 153, 52),
+        sf::Color(249, 209, 0),
+        sf::Color(175, 184, 59),
+        sf::Color(127, 204, 74),
+        sf::Color(43,  148, 56),
+        sf::Color(104, 205, 186),
+        sf::Color(20,  143, 174),
+        sf::Color(150, 195, 236),
+        sf::Color(64,  115, 255),
+        sf::Color(136, 77,  255),
+        sf::Color(172, 59,  228),
+        sf::Color(237, 149, 236),
+        sf::Color(224, 81,  147),
+        sf::Color(255, 140, 133),
+        sf::Color(128, 128, 128),
+        sf::Color(22,  170, 244)
     };
 
-    Board *gameBoard = new Board(6, 100, colorsPalette, 2);
+    Board *gameBoard = new Board(6, 100, colorsPalette, 18);
 
     /* Window loop */
     while (window.isOpen()) {
